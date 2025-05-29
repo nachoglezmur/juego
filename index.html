@@ -26,18 +26,18 @@
         }
         
         .console {
-            width: 95vw;
-            max-width: 400px;
-            height: 95vh;
-            max-height: 700px;
+            width: 98vw; /* Increased from 95vw */
+            max-width: 500px; /* Increased from 400px */
+            height: 98vh; /* Increased from 95vh */
+            max-height: 850px; /* Increased from 700px */
             background: linear-gradient(145deg, #2d2d44, #1a1a2e);
-            border-radius: 25px;
+            border-radius: 30px; /* Slightly larger border-radius */
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.3),
-                inset 0 2px 4px rgba(255,255,255,0.1),
-                inset 0 -2px 4px rgba(0,0,0,0.3);
+                0 25px 50px rgba(0,0,0,0.4), /* Slightly larger shadow */
+                inset 0 3px 6px rgba(255,255,255,0.1),
+                inset 0 -3px 6px rgba(0,0,0,0.3);
             position: relative;
-            padding: 20px;
+            padding: 25px; /* Increased padding */
             display: flex;
             flex-direction: column;
         }
@@ -45,31 +45,31 @@
         .console::before {
             content: '';
             position: absolute;
-            top: 10px;
+            top: 15px; /* Adjusted top */
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
+            width: 80px; /* Wider */
+            height: 5px; /* Thicker */
             background: linear-gradient(90deg, #ff6b9d, #4ecdc4);
-            border-radius: 2px;
+            border-radius: 3px;
         }
         
         .brand {
             text-align: center;
             color: #4ecdc4;
-            font-size: 14px;
+            font-size: 16px; /* Slightly larger font */
             font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+            margin-bottom: 15px; /* Increased margin */
+            text-shadow: 0 0 12px rgba(78, 205, 196, 0.5);
         }
         
         .screen-container {
             background: linear-gradient(145deg, #0f0f1a, #1a1a2e);
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 20px; /* Larger border-radius */
+            padding: 20px; /* Increased padding */
             box-shadow: 
-                inset 0 4px 8px rgba(0,0,0,0.5),
-                inset 0 -2px 4px rgba(255,255,255,0.1);
+                inset 0 5px 10px rgba(0,0,0,0.6), /* Slightly larger shadow */
+                inset 0 -3px 6px rgba(255,255,255,0.1);
             position: relative;
             flex: 1;
             display: flex;
@@ -78,9 +78,9 @@
         
         .screen-bezel {
             background: linear-gradient(135deg, #000011, #1a0033);
-            border-radius: 10px;
-            padding: 8px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+            border-radius: 12px; /* Slightly larger border-radius */
+            padding: 10px; /* Increased padding */
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.9); /* Slightly larger shadow */
             flex: 1;
             position: relative;
         }
@@ -93,7 +93,7 @@
                 radial-gradient(circle at 80% 20%, rgba(30, 144, 255, 0.2) 0%, transparent 50%),
                 radial-gradient(circle at 40% 70%, rgba(255, 20, 147, 0.2) 0%, transparent 50%),
                 linear-gradient(135deg, #0a0a2e 0%, #1a0033 50%, #000011 100%);
-            border-radius: 6px;
+            border-radius: 8px; /* Slightly larger border-radius */
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
@@ -101,32 +101,32 @@
         
         .ui-overlay {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 11px;
+            top: 20px; /* Adjusted position */
+            left: 20px; /* Adjusted position */
+            font-size: 13px; /* Larger font */
             font-weight: bold;
             color: #00ff88;
-            text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
             background: rgba(0,0,0,0.7);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 15px; /* Increased padding */
+            border-radius: 10px; /* Larger border-radius */
             border: 1px solid rgba(0, 255, 136, 0.3);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px); /* Slightly more blur */
         }
         
         .ad-overlay {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 11px;
+            top: 20px; /* Adjusted position */
+            right: 20px; /* Adjusted position */
+            font-size: 13px; /* Larger font */
             font-weight: bold;
             color: #ff6b9d;
-            text-shadow: 0 0 8px rgba(255, 107, 157, 0.8);
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.8);
             background: rgba(0,0,0,0.7);
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 8px 12px; /* Increased padding */
+            border-radius: 10px; /* Larger border-radius */
             border: 1px solid rgba(255, 107, 157, 0.3);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px); /* Slightly more blur */
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -137,31 +137,31 @@
         }
         
         .controls {
-            margin-top: 15px;
+            margin-top: 20px; /* Increased margin */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 120px;
+            height: 140px; /* Increased height */
         }
         
         .dpad-container {
             position: relative;
-            width: 100px;
-            height: 100px;
+            width: 120px; /* Larger D-pad container */
+            height: 120px; /* Larger D-pad container */
         }
         
         .dpad {
             position: absolute;
             background: linear-gradient(145deg, #3d3d5c, #2d2d44);
-            border: 2px solid #1a1a2e;
+            border: 3px solid #1a1a2e; /* Thicker border */
             box-shadow: 
-                0 4px 8px rgba(0,0,0,0.3),
-                inset 0 2px 4px rgba(255,255,255,0.1);
+                0 5px 10px rgba(0,0,0,0.4),
+                inset 0 3px 6px rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 16px;
+            font-size: 20px; /* Larger font */
             font-weight: bold;
             transition: all 0.1s ease;
             user-select: none;
@@ -170,36 +170,36 @@
         .dpad:active {
             background: linear-gradient(145deg, #4ecdc4, #45b7d1);
             box-shadow: 
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 1px 2px rgba(255,255,255,0.2);
+                0 3px 6px rgba(0,0,0,0.5),
+                inset 0 2px 4px rgba(255,255,255,0.2);
             transform: scale(0.95);
         }
         
         .dpad-up, .dpad-down {
-            width: 40px;
-            height: 30px;
+            width: 50px; /* Wider */
+            height: 35px; /* Taller */
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 8px;
+            border-radius: 10px; /* Larger border-radius */
         }
         
         .dpad-up { top: 0; }
         .dpad-down { bottom: 0; }
         
         .dpad-left, .dpad-right {
-            width: 30px;
-            height: 40px;
+            width: 35px; /* Wider */
+            height: 50px; /* Taller */
             top: 50%;
             transform: translateY(-50%);
-            border-radius: 8px;
+            border-radius: 10px; /* Larger border-radius */
         }
         
         .dpad-left { left: 0; }
         .dpad-right { right: 0; }
         
         .dpad-center {
-            width: 40px;
-            height: 40px;
+            width: 50px; /* Larger */
+            height: 50px; /* Larger */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -211,25 +211,25 @@
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px; /* Increased gap */
             align-items: center;
         }
         
         .action-btn {
-            width: 55px;
-            height: 55px;
+            width: 70px; /* Larger buttons */
+            height: 70px; /* Larger buttons */
             border-radius: 50%;
             background: linear-gradient(145deg, #ff6b9d, #e55a87);
-            border: 3px solid #2d2d44;
+            border: 4px solid #2d2d44; /* Thicker border */
             color: white;
-            font-size: 14px;
+            font-size: 18px; /* Larger font */
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 
-                0 4px 8px rgba(0,0,0,0.3),
-                inset 0 2px 4px rgba(255,255,255,0.2);
+                0 5px 10px rgba(0,0,0,0.4),
+                inset 0 3px 6px rgba(255,255,255,0.2);
             transition: all 0.1s ease;
             position: relative;
         }
@@ -238,8 +238,8 @@
             background: linear-gradient(145deg, #4ecdc4, #45b7d1);
             transform: scale(0.9);
             box-shadow: 
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 1px 2px rgba(255,255,255,0.3);
+                0 3px 6px rgba(0,0,0,0.5),
+                inset 0 2px 4px rgba(255,255,255,0.3);
         }
         
         .action-btn.disabled {
@@ -250,19 +250,19 @@
         
         .btn-cost {
             position: absolute;
-            bottom: -5px;
-            right: -5px;
+            bottom: -8px; /* Adjusted position */
+            right: -8px; /* Adjusted position */
             background: rgba(0,0,0,0.8);
             color: #ff6b9d;
-            font-size: 8px;
-            padding: 2px 4px;
-            border-radius: 4px;
+            font-size: 10px; /* Larger font */
+            padding: 3px 6px; /* Increased padding */
+            border-radius: 5px; /* Larger border-radius */
             border: 1px solid #ff6b9d;
         }
         
         .shield-effect {
             position: absolute;
-            border: 2px solid #00ff88;
+            border: 3px solid #00ff88; /* Thicker border */
             border-radius: 50%;
             opacity: 0;
             animation: shieldPulse 0.5s ease-out;
@@ -281,13 +281,13 @@
         
         .power-indicator {
             position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 8px;
-            height: 8px;
+            top: 30px; /* Adjusted position */
+            right: 30px; /* Adjusted position */
+            width: 10px; /* Larger */
+            height: 10px; /* Larger */
             background: #00ff88;
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.8); /* Larger shadow */
             animation: pulse 2s infinite;
         }
         
@@ -309,47 +309,47 @@
             justify-content: center;
             color: white;
             text-align: center;
-            border-radius: 6px;
-            backdrop-filter: blur(10px);
+            border-radius: 8px; /* Larger border-radius */
+            backdrop-filter: blur(12px); /* More blur */
         }
         
         .game-over-overlay h2 {
             color: #ff6b9d;
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 107, 157, 0.8);
+            font-size: 24px; /* Larger font */
+            margin-bottom: 15px; /* Increased margin */
+            text-shadow: 0 0 12px rgba(255, 107, 157, 0.8);
         }
         
         .restart-btn {
             background: linear-gradient(135deg, #00ff88, #4ecdc4);
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 12px;
+            padding: 12px 25px; /* Increased padding */
+            font-size: 14px; /* Larger font */
             font-weight: bold;
-            border-radius: 6px;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(0, 255, 136, 0.3);
+            border-radius: 8px; /* Larger border-radius */
+            margin-top: 20px; /* Increased margin */
+            box-shadow: 0 5px 12px rgba(0, 255, 136, 0.3); /* Larger shadow */
             transition: all 0.2s ease;
         }
         
         .restart-btn:active {
             transform: scale(0.95);
-            box-shadow: 0 2px 5px rgba(0, 255, 136, 0.5);
+            box-shadow: 0 3px 8px rgba(0, 255, 136, 0.5);
         }
         
         .speaker-grille {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px; /* Adjusted position */
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 3px;
+            gap: 4px; /* Increased gap */
         }
         
         .speaker-hole {
-            width: 4px;
-            height: 4px;
+            width: 5px; /* Larger */
+            height: 5px; /* Larger */
             background: #1a1a2e;
             border-radius: 50%;
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
@@ -370,20 +370,20 @@
         
         .ad-content {
             background: linear-gradient(145deg, #2d2d44, #1a1a2e);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px; /* Increased padding */
+            border-radius: 20px; /* Larger border-radius */
             text-align: center;
             color: white;
             border: 2px solid #ff6b9d;
-            box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+            box-shadow: 0 0 25px rgba(255, 107, 157, 0.6); /* Larger shadow */
         }
         
         .ad-progress {
-            width: 200px;
-            height: 10px;
+            width: 250px; /* Wider */
+            height: 12px; /* Taller */
             background: #333;
-            border-radius: 5px;
-            margin: 15px auto;
+            border-radius: 6px; /* Larger border-radius */
+            margin: 20px auto; /* Increased margin */
             overflow: hidden;
         }
         
@@ -797,9 +797,10 @@
                 shield.className = 'shield-effect';
                 shield.style.left = '50%';
                 shield.style.top = '50%';
-                shield.style.transform = 'translate(-50%, -50%)';
-                shield.style.width = '60px';
-                shield.style.height = '60px';
+                // The size of the shield should scale with the game, not fixed.
+                // Assuming player.radius is the base, adjust as needed for visual effect.
+                shield.style.width = (player.radius * 2 * 1.5) + 'px'; // Example: 1.5x player radius
+                shield.style.height = (player.radius * 2 * 1.5) + 'px';
                 document.querySelector('.screen-bezel').appendChild(shield);
                 
                 setTimeout(() => {
