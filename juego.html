@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>GameBoy Espacial - Astronauta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            touch-action: none;
+        }
+        
+        .console {
+            width: 95vw;
+            max-width: 400px;
+            height: 95vh;
+            max-height: 700px;
+            background: linear-gradient(145deg, #2d2d44, #1a1a2e);
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.1),
+                inset 0 -2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .console::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b9d, #4ecdc4);
+            border-radius: 2px;
+        }
+        
+        .brand {
+            text-align: center;
+            color: #4ecdc4;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+        
+        .screen-container {
+            background: linear-gradient(145deg, #0f0f1a, #1a1a2e);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 
+                inset 0 4px 8px rgba(0,0,0,0.5),
+                inset 0 -2px 4px rgba(255,255,255,0.1);
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .screen-bezel {
+            background: linear-gradient(135deg, #000011, #1a0033);
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+            flex: 1;
+            position: relative;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(30, 144, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 70%, rgba(255, 20, 147, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a2e 0%, #1a0033 50%, #000011 100%);
+            border-radius: 6px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .ui-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+            background: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(3px);
+        }
+        
+        .ad-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #ff6b9d;
+            text-shadow: 0 0 8px rgba(255, 107, 157, 0.8);
+            background: rgba(0,0,0,0.7);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            backdrop-filter: blur(3px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .ad-overlay:hover {
+            background: rgba(255, 107, 157, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 120px;
+        }
+        
+        .dpad-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .dpad {
+            position: absolute;
+            background: linear-gradient(145deg, #3d3d5c, #2d2d44);
+            border: 2px solid #1a1a2e;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+        
+        .dpad:active {
+            background: linear-gradient(145deg, #4ecdc4, #45b7d1);
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 1px 2px rgba(255,255,255,0.2);
+            transform: scale(0.95);
+        }
+        
+        .dpad-up, .dpad-down {
+            width: 40px;
+            height: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 8px;
+        }
+        
+        .dpad-up { top: 0; }
+        .dpad-down { bottom: 0; }
+        
+        .dpad-left, .dpad-right {
+            width: 30px;
+            height: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 8px;
+        }
+        
+        .dpad-left { left: 0; }
+        .dpad-right { right: 0; }
+        
+        .dpad-center {
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1a1a2e, #2d2d44);
+            pointer-events: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .action-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff6b9d, #e55a87);
+            border: 3px solid #2d2d44;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.2);
+            transition: all 0.1s ease;
+            position: relative;
+        }
+        
+        .action-btn:active {
+            background: linear-gradient(145deg, #4ecdc4, #45b7d1);
+            transform: scale(0.9);
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+        
+        .action-btn.disabled {
+            background: linear-gradient(145deg, #666, #444);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .btn-cost {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: rgba(0,0,0,0.8);
+            color: #ff6b9d;
+            font-size: 8px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #ff6b9d;
+        }
+        
+        .shield-effect {
+            position: absolute;
+            border: 2px solid #00ff88;
+            border-radius: 50%;
+            opacity: 0;
+            animation: shieldPulse 0.5s ease-out;
+        }
+        
+        @keyframes shieldPulse {
+            0% { 
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .power-indicator {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .game-over-overlay h2 {
+            color: #ff6b9d;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.8);
+        }
+        
+        .restart-btn {
+            background: linear-gradient(135deg, #00ff88, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0, 255, 136, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .restart-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(0, 255, 136, 0.5);
+        }
+        
+        .speaker-grille {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 3px;
+        }
+        
+        .speaker-hole {
+            width: 4px;
+            height: 4px;
+            background: #1a1a2e;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .ad-content {
+            background: linear-gradient(145deg, #2d2d44, #1a1a2e);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            border: 2px solid #ff6b9d;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        }
+        
+        .ad-progress {
+            width: 200px;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+        
+        .ad-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d, #4ecdc4);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="console">
+        <div class="power-indicator"></div>
+        <div class="brand">SPACE RUNNER</div>
+        
+        <div class="screen-container">
+            <div class="screen-bezel">
+                <canvas id="gameCanvas" width="320" height="240"></canvas>
+                <div class="ui-overlay">
+                    <div>💰 <span id="score">0</span></div>
+                    <div>❤️ <span id="lives">3</span></div>
+                    <div>⚡ <span id="powerPoints">0</span></div>
+                </div>
+                <div class="ad-overlay" id="watchAd">
+                    📺 +5⚡
+                </div>
+                <div class="game-over-overlay" id="gameOver">
+                    <h2>¡Game Over!</h2>
+                    <p>Billetes: <span id="finalScore">0</span></p>
+                    <button class="restart-btn" onclick="restartGame()">RESTART</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="dpad-container">
+                <div class="dpad dpad-up" data-key="up">▲</div>
+                <div class="dpad dpad-down" data-key="down">▼</div>
+                <div class="dpad dpad-left" data-key="left">◀</div>
+                <div class="dpad dpad-right" data-key="right">▶</div>
+                <div class="dpad-center"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="actionA">
+                    🛡️
+                    <span class="btn-cost">-3⚡</span>
+                </button>
+                <button class="action-btn" id="actionB">
+                    🚀
+                    <span class="btn-cost">-2⚡</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="speaker-grille">
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+            <div class="speaker-hole"></div>
+        </div>
+    </div>
+
+    <div class="ad-modal" id="adModal">
+        <div class="ad-content">
+            <h3>¡Viendo anuncio!</h3>
+            <p>Obtendrás 5 puntos de energía ⚡</p>
+            <div class="ad-progress">
+                <div class="ad-progress-bar" id="adProgress"></div>
+            </div>
+            <p id="adTimer">5s</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Desactivar suavizado para pixel art
+        ctx.imageSmoothingEnabled = false;
+        
+        // Variables del juego
+        let gameRunning = true;
+        let score = 0;
+        let lives = 3;
+        let powerPoints = 5; // Puntos iniciales
+        let gameSpeed = 1.5;
+        let shieldActive = false;
+        let boostActive = false;
+        
+        // Costos de habilidades
+        const SHIELD_COST = 3;
+        const BOOST_COST = 2;
+        
+        // Jugador (hitbox circular)
+        const player = {
+            x: 40,
+            y: canvas.height / 2,
+            radius: 12, // Radio para hitbox circular
+            speed: 2,
+            color: '#4a9eff'
+        };
+        
+        // Arrays para objetos del juego
+        let asteroids = [];
+        let money = [];
+        let stars = [];
+        let particles = [];
+        
+        // Controles táctiles
+        const keys = {};
+        
+        // Configurar controles táctiles
+        document.querySelectorAll('.dpad').forEach(pad => {
+            pad.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const key = pad.dataset.key;
+                keys[key] = true;
+            });
+            
+            // On touchend/mouseup on the specific D-pad button
+            pad.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const key = pad.dataset.key;
+                keys[key] = false;
+            });
+            
+            // Soporte para mouse también
+            pad.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const key = pad.dataset.key;
+                keys[key] = true;
+            });
+            
+            // On touchend/mouseup on the specific D-pad button
+            pad.addEventListener('mouseup', (e) => {
+                e.preventDefault();
+                const key = pad.dataset.key;
+                keys[key] = false;
+            });
+        });
+        
+        // GLOBAL touchend and mouseup listeners to stop all movement
+        document.addEventListener('touchend', (e) => {
+            // Reset all keys to false
+            for (const key in keys) {
+                if (keys.hasOwnProperty(key)) {
+                    keys[key] = false;
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            // Reset all keys to false
+            for (const key in keys) {
+                if (keys.hasOwnProperty(key)) {
+                    keys[key] = false;
+                }
+            }
+        });
+
+        // Add keyboard support for convenience during development
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    keys.up = true;
+                    break;
+                case 'ArrowDown':
+                    keys.down = true;
+                    break;
+                case 'ArrowLeft':
+                    keys.left = true;
+                    break;
+                case 'ArrowRight':
+                    keys.right = true;
+                    break;
+                case 'a': // For shield
+                    activateShield();
+                    break;
+                case 's': // For boost
+                    activateBoost();
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    keys.up = false;
+                    break;
+                case 'ArrowDown':
+                    keys.down = false;
+                    break;
+                case 'ArrowLeft':
+                    keys.left = false;
+                    break;
+                case 'ArrowRight':
+                    keys.right = false;
+                    break;
+            }
+        });
+
+        // Botones de acción
+        document.getElementById('actionA').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            activateShield();
+        });
+        
+        document.getElementById('actionA').addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            activateShield();
+        });
+        
+        document.getElementById('actionB').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            activateBoost();
+        });
+        
+        document.getElementById('actionB').addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            activateBoost();
+        });
+        
+        // Botón de ver anuncio
+        document.getElementById('watchAd').addEventListener('click', watchAd);
+        
+        // Prevenir scroll en dispositivos móviles
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Función para dibujar pixel art del astronauta (simplificado para móvil)
+        function drawAstronaut(x, y) {
+            const size = 1;
+            const pixels = [
+                [0,1,1,1,0],
+                [1,2,3,2,1],
+                [1,2,2,2,1],
+                [0,1,1,1,0],
+                [0,4,4,4,0],
+                [4,4,4,4,4],
+                [4,5,4,5,4],
+                [4,4,4,4,4],
+                [0,4,6,4,0],
+                [0,7,7,7,0],
+                [7,7,7,7,7],
+                [0,7,0,7,0]
+            ];
+            
+            const colors = [
+                'transparent',
+                '#666666', // casco
+                '#cccccc', // visor
+                '#ffffff', // reflejo
+                '#4a9eff', // traje
+                '#2277cc', // detalles
+                '#ff6666', // controles
+                '#444444'  // botas
+            ];
+            
+            for (let row = 0; row < pixels.length; row++) {
+                for (let col = 0; col < pixels[row].length; col++) {
+                    const colorIndex = pixels[row][col];
+                    if (colorIndex > 0) {
+                        ctx.fillStyle = colors[colorIndex];
+                        ctx.fillRect(x + col * size * 2, y + row * size * 2, size * 2, size * 2);
+                    }
+                }
+            }
+        }
+        
+        // Función para dibujar billete
+        function drawMoney(x, y) {
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(x, y, 12, 8);
+            ctx.fillStyle = '#2E7D32';
+            ctx.fillRect(x + 1, y + 1, 10, 6);
+            ctx.fillStyle = '#FFD700';
+            ctx.fillRect(x + 3, y + 2, 6, 4);
+        }
+        
+        // Función para dibujar asteroide mejorado (circular)
+        function drawAsteroid(x, y, radius) {
+            const scale = radius / 15;
+            
+            // Patrón detallado del asteroide
+            const asteroidPattern = [
+                [0,0,1,2,2,1,0,0],
+                [0,1,2,3,4,3,2,1],
+                [1,2,4,5,6,5,4,2],
+                [2,3,5,6,7,6,5,3],
+                [2,4,6,7,8,7,6,4],
+                [1,3,5,6,6,5,3,2],
+                [0,2,3,4,4,3,2,0],
+                [0,0,1,2,2,1,0,0]
+            ];
+            
+            const asteroidColors = [
+                'transparent',      // 0
+                '#2d1810',         // 1 - borde muy oscuro
+                '#3d2318',         // 2 - marrón muy oscuro
+                '#4d2d20',         // 3 - marrón oscuro
+                '#5d3528',         // 4 - marrón medio
+                '#6d4030',         // 5 - marrón
+                '#7d4d38',         // 6 - marrón claro
+                '#8d5a40',         // 7 - beige oscuro
+                '#9d6748'          // 8 - beige claro (centro)
+            ];
+            
+            // Dibujar el asteroide base
+            const pixelSize = Math.max(1, Math.floor(2 * scale));
+            // const size = radius * 2; // Not directly used in the loop, but conceptual
+            for (let row = 0; row < asteroidPattern.length; row++) {
+                for (let col = 0; col < asteroidPattern[row].length; col++) {
+                    const colorIndex = asteroidPattern[row][col];
+                    if (colorIndex > 0) {
+                        ctx.fillStyle = asteroidColors[colorIndex];
+                        ctx.fillRect(
+                            x - radius + col * pixelSize, 
+                            y - radius + row * pixelSize, 
+                            pixelSize, 
+                            pixelSize
+                        );
+                    }
+                }
+            }
+            
+            // Añadir cráteres oscuros
+            ctx.fillStyle = '#1a0f08';
+            const numCraters = Math.floor(scale * 2) + 1;
+            for (let i = 0; i < numCraters; i++) {
+                const craterX = x - radius * 0.6 + Math.random() * (radius * 1.2);
+                const craterY = y - radius * 0.6 + Math.random() * (radius * 1.2);
+                const craterSize = Math.max(1, Math.floor(pixelSize * 1.5));
+                ctx.fillRect(craterX, craterY, craterSize, craterSize);
+            }
+            
+            // Añadir brillos/reflejos
+            ctx.fillStyle = '#ad7d50';
+            const numHighlights = Math.floor(scale * 1.5) + 1;
+            for (let i = 0; i < numHighlights; i++) {
+                const highlightX = x - radius * 0.7 + Math.random() * (radius * 0.6);
+                const highlightY = y - radius * 0.7 + Math.random() * (radius * 0.6);
+                const highlightSize = Math.max(1, pixelSize);
+                ctx.fillRect(highlightX, highlightY, highlightSize, highlightSize);
+            }
+        }
+        
+        // Crear estrellas de fondo
+        function createStars() {
+            for (let i = 0; i < 80; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.5 + 0.2,
+                    brightness: Math.random() * 0.5 + 0.5
+                });
+            }
+        }
+        
+        // Crear asteroide con hitbox circular
+        function createAsteroid() {
+            const radius = 10 + Math.random() * 8;
+            asteroids.push({
+                x: canvas.width,
+                y: Math.random() * (canvas.height - radius * 2) + radius,
+                radius: radius,
+                speed: gameSpeed + Math.random() * 1
+            });
+        }
+        
+        // Crear billete
+        function createMoney() {
+            money.push({
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 15),
+                width: 12,
+                height: 8,
+                speed: gameSpeed
+            });
+        }
+        
+        // Crear partícula
+        function createParticle(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    life: 30,
+                    maxLife: 30,
+                    color: color,
+                    size: Math.random() * 2 + 1
+                });
+            }
+        }
+        
+        // Activar escudo (con costo de puntos)
+        function activateShield() {
+            if (powerPoints >= SHIELD_COST && !shieldActive) {
+                powerPoints -= SHIELD_COST;
+                shieldActive = true;
+                
+                // Efecto visual
+                const shield = document.createElement('div');
+                shield.className = 'shield-effect';
+                shield.style.left = '50%';
+                shield.style.top = '50%';
+                shield.style.transform = 'translate(-50%, -50%)';
+                shield.style.width = '60px';
+                shield.style.height = '60px';
+                document.querySelector('.screen-bezel').appendChild(shield);
+                
+                setTimeout(() => {
+                    shieldActive = false;
+                    if (shield.parentNode) {
+                        shield.parentNode.removeChild(shield);
+                    }
+                }, 3000); // 3 segundos de duración
+                
+                updateButtonStates();
+            }
+        }
+        
+        // Activar boost (con costo de puntos)
+        function activateBoost() {
+            if (powerPoints >= BOOST_COST && !boostActive) {
+                powerPoints -= BOOST_COST;
+                boostActive = true;
+                gameSpeed *= 1.5; // Aumenta la velocidad del juego
+                
+                setTimeout(() => {
+                    boostActive = false;
+                    gameSpeed /= 1.5; // Vuelve a la velocidad normal
+                }, 2000); // 2 segundos de duración
+                
+                updateButtonStates();
+            }
+        }
+        
+        // Actualizar estado de los botones
+        function updateButtonStates() {
+            const shieldBtn = document.getElementById('actionA');
+            const boostBtn = document.getElementById('actionB');
+            
+            // Deshabilitar botones si no hay suficientes puntos
+            if (powerPoints < SHIELD_COST || shieldActive) {
+                shieldBtn.classList.add('disabled');
+            } else {
+                shieldBtn.classList.remove('disabled');
+            }
+            
+            if (powerPoints < BOOST_COST || boostActive) {
+                boostBtn.classList.add('disabled');
+            } else {
+                boostBtn.classList.remove('disabled');
+            }
+        }
+        
+        // Ver anuncio para ganar puntos
+        function watchAd() {
+            const modal = document.getElementById('adModal');
+            const progressBar = document.getElementById('adProgress');
+            const timer = document.getElementById('adTimer');
+            
+            modal.style.display = 'flex';
+            
+            let timeLeft = 5;
+            let progress = 0;
+            
+            const adInterval = setInterval(() => {
+                progress += 20;
+                timeLeft--;
+                
+                progressBar.style.width = progress + '%';
+                timer.textContent = timeLeft + 's';
+                
+                if (timeLeft <= 0) {
+                    clearInterval(adInterval);
+                    powerPoints += 5;
+                    modal.style.display = 'none';
+                    updateButtonStates();
+                    updateUI();
+                }
+            }, 1000);
+        }
+        
+        // Colisión entre dos círculos
+        function circleCollision(c1x, c1y, c1r, c2x, c2y, c2r) {
+            const dx = c1x - c2x;
+            const dy = c1y - c2y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < (c1r + c2r);
+        }
+
+        // Colisión entre círculo y rectángulo
+        function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
+            // Encuentra el punto más cercano en el rectángulo al centro del círculo
+            const testX = Math.max(rx, Math.min(cx, rx + rw));
+            const testY = Math.max(ry, Math.min(cy, ry + rh));
+
+            // Calcula la distancia entre el punto más cercano y el centro del círculo
+            const distX = cx - testX;
+            const distY = cy - testY;
+            const distance = Math.sqrt((distX * distX) + (distY * distY));
+
+            // Comprueba si la distancia es menor que el radio del círculo
+            return distance <= cr;
+        }
+
+        // Actualizar UI
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('lives').textContent = lives;
+            document.getElementById('powerPoints').textContent = powerPoints;
+            updateButtonStates();
+        }
+
+        // Mostrar pantalla de Game Over
+        function showGameOver() {
+            gameRunning = false;
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOver').style.display = 'flex';
+        }
+
+        // Reiniciar juego
+        function restartGame() {
+            score = 0;
+            lives = 3;
+            powerPoints = 5;
+            gameSpeed = 1.5;
+            asteroids = [];
+            money = [];
+            stars = [];
+            particles = [];
+            shieldActive = false;
+            boostActive = false;
+            document.getElementById('gameOver').style.display = 'none';
+            createStars(); // Regenerar estrellas
+            updateUI();
+            gameRunning = true;
+            gameLoop();
+        }
+
+        // Game Loop
+        let frameCount = 0;
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw stars
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.x -= star.speed;
+                if (star.x < 0) {
+                    star.x = canvas.width;
+                    star.y = Math.random() * canvas.height;
+                }
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+            }
+
+            // Update player position
+            if (keys.up && player.y > player.radius) player.y -= player.speed;
+            if (keys.down && player.y < canvas.height - player.radius) player.y += player.speed;
+            if (keys.left && player.x > player.radius) player.x -= player.speed;
+            if (keys.right && player.x < canvas.width - player.radius) player.x += player.speed;
+
+            // Draw player
+            drawAstronaut(player.x - 10, player.y - 12); // Adjust for astronaut pixel art size
+
+            // Draw shield if active
+            if (shieldActive) {
+                ctx.strokeStyle = '#00ff88';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius + 5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Spawn new asteroids
+            if (Math.random() < 0.02 * gameSpeed) { // Adjust spawn rate with game speed
+                createAsteroid();
+            }
+
+            // Update and draw asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                const asteroid = asteroids[i];
+                asteroid.x -= asteroid.speed;
+                drawAsteroid(asteroid.x, asteroid.y, asteroid.radius);
+
+                // Collision with player
+                if (circleCollision(player.x, player.y, player.radius, asteroid.x, asteroid.y, asteroid.radius)) {
+                    if (shieldActive) {
+                        createParticle(asteroid.x, asteroid.y, '#00ff88'); // Shield hit particles
+                        asteroids.splice(i, 1); // Remove asteroid
+                        shieldActive = false; // Shield breaks
+                        // Remove shield visual
+                        const shieldElement = document.querySelector('.shield-effect');
+                        if (shieldElement) {
+                            shieldElement.parentNode.removeChild(shieldElement);
+                        }
+                    } else {
+                        lives--;
+                        createParticle(player.x, player.y, '#ff0000'); // Player hit particles
+                        asteroids.splice(i, 1); // Remove asteroid
+                        if (lives <= 0) {
+                            showGameOver();
+                        }
+                    }
+                    updateUI();
+                }
+
+                // Remove off-screen asteroids
+                if (asteroid.x + asteroid.radius < 0) {
+                    asteroids.splice(i, 1);
+                }
+            }
+
+            // Spawn new money
+            if (Math.random() < 0.01) { // Fixed spawn rate for money
+                createMoney();
+            }
+
+            // Update and draw money
+            for (let i = money.length - 1; i >= 0; i--) {
+                const bill = money[i];
+                bill.x -= bill.speed;
+                drawMoney(bill.x, bill.y);
+
+                // Collision with player (player hitbox is circular, money is rectangular)
+                // Assuming astronaut drawing function is centered at player.x, player.y
+                const astronautDrawX = player.x - 10;
+                const astronautDrawY = player.y - 12;
+                const astronautWidth = 10; // Approx width of astronaut pixel art
+                const astronautHeight = 24; // Approx height of astronaut pixel art
+
+                if (circleRectCollision(player.x, player.y, player.radius, bill.x, bill.y, bill.width, bill.height)) {
+                    score++;
+                    createParticle(bill.x, bill.y, '#FFD700'); // Money collected particles
+                    money.splice(i, 1);
+                    updateUI();
+                }
+
+                // Remove off-screen money
+                if (bill.x + bill.width < 0) {
+                    money.splice(i, 1);
+                }
+            }
+
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / p.maxLife;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                ctx.globalAlpha = 1;
+
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            updateUI();
+            
+            frameCount++;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initial setup
+        createStars();
+        updateUI();
+        gameLoop();
+    </script>
+</body>
+</html>
